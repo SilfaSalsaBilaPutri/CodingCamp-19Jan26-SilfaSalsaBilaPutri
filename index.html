@@ -2,89 +2,75 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Todo-List</title>
+    <title>Todo List</title>
 
-    <!-- CSS External File -->
+    <!-- File internal CSS -->
     <link rel="stylesheet" href="css/style.css" />
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
+  <body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <main class="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl">
+      <header class="mb-6 text-center">
+        <h1 class="text-2xl font-bold text-gray-800">Todo List</h1>
+      </header>
 
-  <body>
-    <!-- Header Section -->
-    <header>
-      <h1 class="text-2xl font-bold">Todo-List Silfa</h1>
-    </header>
-
-    <!-- Main Content Section -->
-    <main>
-      <!-- Form Section -->
-      <section>
-        <form>
-          <!-- Todo Input -->
+      <section class="mb-4">
+        <form class="flex gap-2">
           <input
-            class="border p-2 rounded"
             type="text"
-            id="todo-input"
-            placeholder="Enter a new todo item"
+            id="taskInput"
+            placeholder="Add a todo..."
+            class="flex-1 border rounded px-3 py-2"
           />
 
-          <!-- Date Input -->
-          <input
-            class="border p-2 rounded"
-            type="date"
-            id="todo-date"
-            placeholder="Enter due date"
-          />
+          <input type="date" id="dateInput" class="border rounded px-3 py-2" />
+
+          <button
+            type="button"
+            id="addBtn"
+            class="bg-blue-500 text-white px-4 rounded hover:bg-blue-600"
+          >
+            +
+          </button>
         </form>
+      </section>
 
-        <!-- Add Button -->
+      <section class="flex justify-between mb-4">
+        <button class="filter border px-4 py-2 rounded hover:bg-gray-200">
+          FILTER
+        </button>
+
         <button
-          class="border rounded p-2 bg-green-500 text-white"
-          onclick="addTodo()"
-          type="button"
+          class="delete-all bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
         >
-          Add Todo
+          DELETE ALL
         </button>
       </section>
 
-      <!-- Action Section -->
-      <section class="flex pt-2 justify-between">
-        <!-- Clear All Button -->
-        <button
-          class="border rounded p-2 bg-red-500 text-white"
-          onclick="deleteAllTodo()"
-        >
-          Clear All Todos
-        </button>
+      <section>
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="bg-gray-200 text-left">
+              <th class="p-2">TASK</th>
+              <th class="p-2">DUE DATE</th>
+              <th class="p-2">STATUS</th>
+              <th class="p-2">ACTIONS</th>
+            </tr>
+          </thead>
 
-        <!-- Filter Options -->
-        <button class="border rounded p-2 bg-blue-500 text-white">
-          Filter Todos
-        </button>
-      </section>
-
-      <!-- Todo List Section -->
-      <section class="pt-2">
-        <header>
-          <h1 class="text-2xl font-semibold">List of Todos</h1>
-        </header>
-
-        <ul class="pt-2" id="todo-list">
-          <!-- Todo items will be dynamically added here -->
-          <li>No todos available</li>
-        </ul>
+          <tbody id="todoList">
+            <tr>
+              <td colspan="4" class="text-center text-gray-400 p-4">
+                No task found
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </section>
     </main>
 
-    <!-- Footer Section -->
-    <footer>
-      <p class="text-center pt-4">© 2026 Todo-List Yama Roni</p>
-    </footer>
-
-    <!-- Javascript File -->
     <script src="js/script.js"></script>
   </body>
 </html>

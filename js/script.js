@@ -1,53 +1,117 @@
-// Temporary storage for todo items
-let todos = [];
+document.addEventListener("DOMContentLoaded", () => {
+  let todos = [];
+  let filterMode = "ALL"; // ALL | PENDING | DONE
 
-// Function to add a new todo item
-function addTodo() {
-  const todoInput = document.getElementById("todo-input").value;
-  const todoDate = document.getElementById("todo-date").value;
+  const filterBtn = document.querySelector(".filter");
 
-  if (todoInput === "" || todoDate === "") {
-    alert("Please enter both a todo item and a due date.");
-  } else {
-    const newTodo = {
-      todo: todoInput,
-      date: todoDate,
-    };
+  document.getElementById("addBtn").addEventListener("click", addTodo);
+  document
+    .querySelector(".delete-all")
+    .addEventListener("click", deleteAllTodo);
+  filterBtn.addEventListener("click", toggleFilter);
 
-    todos.push(newTodo);
+  function addTodo() {
+    const taskInput = document.getElementById("taskInput");
+    const dateInput = document.getElementById("dateInput");
 
-    document.getElementById("todo-input").value = "";
-    document.getElementById("todo-date").value = "";
+    const task = taskInput.value.trim();
+    const date = dateInput.value;
 
-    // Re-render the todo list
+    if (!task || !date) {
+      alert("Please enter both task and due date.");
+      return;
+    }
+
+    todos.push({
+      task,
+      date,
+      status: "Pending",
+    });
+
+    taskInput.value = "";
+    dateInput.value = "";
+
     renderTodos();
   }
-}
 
-// Function to render the todo list
-function renderTodos() {
-  const todoList = document.getElementById("todo-list");
+  function renderTodos() {
+    const todoList = document.getElementById("todoList");
+    todoList.innerHTML = "";
 
-  // Clear existing list
-  todoList.innerHTML = "";
+    let filteredTodos = todos
+      .map((todo, index) => ({ ...todo, index })) // 🔑 simpan index asli
+      .filter((todo) => {
+        if (filterMode === "PENDING") return todo.status === "Pending";
+        if (filterMode === "DONE") return todo.status === "Done";
+        return true;
+      });
 
-  // Render each todo item
-  todos.forEach((todo, _) => {
-    todoList.innerHTML += `
-        <li>
-            <p class="text-2xl">${todo.todo} <span class="text-sm text-gray-500">(${todo.date})</span></p>
-            <hr />
-        </li>`;
-  });
-}
+    if (filteredTodos.length === 0) {
+      todoList.innerHTML = `
+        <tr>
+          <td colspan="4" class="text-center text-gray-400 p-4">
+            No task found
+          </td>
+        </tr>
+      `;
+      return;
+    }
 
-// Function to delete all todo items
-function deleteAllTodo() {
-  todos = [];
+    filteredTodos.forEach((todo) => {
+      todoList.innerHTML += `
+        <tr class="border-t ${todo.status === "Done" ? "bg-green-50" : ""}">
+          <td class="p-2 ${
+            todo.status === "Done" ? "line-through text-gray-400" : ""
+          }">
+            ${todo.task}
+          </td>
+          <td class="p-2">${todo.date}</td>
+          <td class="p-2 font-semibold">${todo.status}</td>
+          <td class="p-2 space-x-2">
+            <button
+              onclick="toggleStatus(${todo.index})"
+              class="text-blue-500 hover:underline">
+              ${todo.status === "Pending" ? "Done" : "Undo"}
+            </button>
 
-  // Re-render the todo list
-  renderTodos();
-}
+            <button
+              onclick="deleteTodo(${todo.index})"
+              class="text-red-500 hover:underline">
+              Delete
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+  }
 
-// Function to filter todo items (not implemented yet)
-function filterTodo() {}
+  window.toggleStatus = function (index) {
+    todos[index].status =
+      todos[index].status === "Pending" ? "Done" : "Pending";
+    renderTodos();
+  };
+
+  window.deleteTodo = function (index) {
+    todos.splice(index, 1);
+    renderTodos();
+  };
+
+  function deleteAllTodo() {
+    todos = [];
+    renderTodos();
+  }
+
+  function toggleFilter() {
+    if (filterMode === "ALL") {
+      filterMode = "PENDING";
+      filterBtn.textContent = "PENDING";
+    } else if (filterMode === "PENDING") {
+      filterMode = "DONE";
+      filterBtn.textContent = "DONE";
+    } else {
+      filterMode = "ALL";
+      filterBtn.textContent = "FILTER";
+    }
+    renderTodos();
+  }
+});
